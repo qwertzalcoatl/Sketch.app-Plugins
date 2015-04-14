@@ -25,8 +25,7 @@ function setMargin ( action ) {
         i = parseInt(i);
         if(i > 0){
             if( action == "right") {
-                if(i > 0) 
-                    myItem = array_right[i].item;
+                myItem = array_right[i].item;
                 nextItem = array_right[i-1].item;
                 myItem.frame().x = value + nextItem.frame().x() + nextItem.frame().width();
             } else {
