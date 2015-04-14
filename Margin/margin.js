@@ -1,16 +1,38 @@
 function setMargin ( action ) {
-    var totalMargin = 0;
-    var lastPosition = 0;
-    var loop = [selection objectEnumerator]
+
     var value = parseInt([doc askForUserInput:"Set value for margin" initialValue:"24"])
-    
+
+    array_right = new Array();
+    array_down = new Array();
+
     for (var i=[selection count] - 1; i >= 0; i--){
         item = selection [i];
-        if ( i < [selection count] - 1){
+
+        array_right.push({item: item, position: item.frame().x()});
+        array_down.push({item: item, position: item.frame().y()});
+    }
+
+    array_down.sort(function(a,b) {
+        return a.position - b.position;
+    });
+
+    array_right.sort(function(a,b) {
+        return a.position - b.position;
+    });
+
+
+    for(i in array_down) {
+        i = parseInt(i);
+        if(i > 0){
             if( action == "right") {
-                item.frame().x = value + selection[i+1].frame().x() + selection[i+1].frame().width();
+                if(i > 0) 
+                    myItem = array_right[i].item;
+                nextItem = array_right[i-1].item;
+                myItem.frame().x = value + nextItem.frame().x() + nextItem.frame().width();
             } else {
-                item.frame().y = value + selection[i+1].frame().y() + selection[i+1].frame().height();
+                myItem = array_down[i].item;
+                nextItem = array_down[i-1].item;
+                myItem.frame().y = value + nextItem.frame().y() + nextItem.frame().height();
             }
         }
     }
