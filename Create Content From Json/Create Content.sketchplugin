@@ -52,29 +52,28 @@ function isTemplate(data, template) {
 }
 
 
-var returnedInput, inputModal, inputField, overwriteToggle, modalResponse;
-
-inputField = NSTextField.alloc().initWithFrame(NSMakeRect(0, 0, 300, 200));
-inputField.setFont(NSFont.fontWithName_size("Monaco", 12));
-inputField.enablesReturnKeyAutomatically = true;
-
-inputModal = alertWindow(true);
-inputModal.setMessageText("Add JSON Array" );
-//inputModal.setInformativeText("Type or Paste in your CSS to be applied to this layer.\nControl + Return for new line.");
-inputModal.addAccessoryView(inputField);
-
-modalResponse = inputModal.runModal();
-
-if (modalResponse != 1000) return;
-
-var data = valueAtIndex(inputModal, 0);
-data = JSON.parse(data);
+function getJson() {
+	var returnedInput, inputModal, inputField, modalResponse;
+	inputField = NSTextField.alloc().initWithFrame(NSMakeRect(0, 0, 300, 200));
+	inputField.setFont(NSFont.fontWithName_size("Monaco", 12));
+	inputField.enablesReturnKeyAutomatically = true;
+	inputModal = alertWindow(true);
+	inputModal.setMessageText("Add JSON Array" );
+	//inputModal.setInformativeText("Type or Paste in your CSS to be applied to this layer.\nControl + Return for new line.");
+	inputModal.addAccessoryView(inputField);
+	modalResponse = inputModal.runModal();
+	if (modalResponse != 1000) return;
+	var data = valueAtIndex(inputModal, 0);
+	return JSON.parse(data);
+}
 
 if (context.selection.length() === 0) {
 	alert('You need to select a Group as a template', 'Select a Group');
 } else{
 	var template = context.selection[0];
+	var data = getJson();
 	if(isTemplate(data, template)) {
+
 		height = template.frame().height();
 		y = template.frame().y() + height  + 20;
 
