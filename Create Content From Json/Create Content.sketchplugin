@@ -1,8 +1,12 @@
+// alert function by https://github.com/ddwht
+
 function alert(msg, title) {
 	title = title || "alert";
 	var app = [NSApplication sharedApplication];
 	[app displayDialog:msg withTitle:title];
 }
+
+// alertWindow function by https://github.com/jodyheavener
 
 function alertWindow(canCancel) {
 	var modal = COSAlertWindow.new()
@@ -17,79 +21,8 @@ function alertWindow(canCancel) {
 	return modal
 }
 
+// valueAtIndex function by https://github.com/jodyheavener
+
 function valueAtIndex(view, index) {
   return view.viewAtIndex(index).stringValue()
 }
-
-
-function isTemplate(data, template) {
-	if(![template isKindOfClass:[MSLayerGroup class]]) {
-		alert("You need to select a Group", "Select group");
-		return false;
-	}
-
-	for(index in data) {
-		item = data[index];
-		keys = Object.keys(item);
-		for(keyIndex in keys) {
-			key = keys[keyIndex]
-			content = item[key];
-			for(i=0; i < template.layers().length(); i++) {
-				layer = template.layers().objectAtIndex(i);
-				if( layer.name() == key && [layer isKindOfClass:[MSTextLayer class]]) {
-					return true;
-				}
-			}    
-		} 
-	}
-	return false;
-}
-
-
-var returnedInput, inputModal, inputField, overwriteToggle, modalResponse;
-
-inputField = NSTextField.alloc().initWithFrame(NSMakeRect(0, 0, 300, 200));
-inputField.setFont(NSFont.fontWithName_size("Monaco", 12));
-inputField.enablesReturnKeyAutomatically = true;
-
-inputModal = alertWindow(true);
-inputModal.setMessageText("Add JSON Array" );
-//inputModal.setInformativeText("Type or Paste in your CSS to be applied to this layer.\nControl + Return for new line.");
-inputModal.addAccessoryView(inputField);
-
-modalResponse = inputModal.runModal();
-
-if (modalResponse != 1000) return;
-
-var data = valueAtIndex(inputModal, 0);
-data = JSON.parse(data);
-
-if (context.selection.length() === 0) {
-	alert('You need to select a Group as a template', 'Select a Group');
-} else{
-	var template = context.selection[0];
-	if(isTemplate(data, template)) {
-		height = template.frame().height();
-		y = template.frame().y() + height  + 20;
-
-		for(index in data) {
-			item = data[index];
-			keys = Object.keys(item);
-			var newLayer = template.duplicate();
-			newLayer.frame().y = y;
-			y = y + height+ 20;
-			for(keyIndex in keys) {
-				key = keys[keyIndex]
-				content = item[key];
-				for(i=0; i < newLayer.layers().length(); i++) {
-					layer = newLayer.layers().objectAtIndex(i);
-					if( layer.name() == key && [layer isKindOfClass:[MSTextLayer class]]) {
-						layer.setStringValue(content);
-					}
-				}    
-			} 
-		}
-	}
-}
-
-
